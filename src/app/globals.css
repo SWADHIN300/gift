@@ -88,3 +88,55 @@ body {
   outline: 2px solid rgba(236, 72, 153, 0.5);
   outline-offset: 2px;
 }
+
+/* Heart shape container - clean single color */
+.heart-shape {
+  position: relative;
+  width: 500px;
+  height: 480px;
+  background: #f43f5e;
+  clip-path: path('M250,45 C180,-30 0,30 0,160 C0,290 250,455 250,455 C250,455 500,290 500,160 C500,30 320,-30 250,45 Z');
+  box-shadow:
+    0 20px 60px rgba(244, 63, 94, 0.5),
+    0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: heart-pulse 1.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Heart content container */
+.heart-content {
+  position: relative;
+  width: 320px;
+  text-align: center;
+  padding-top: 60px;
+  z-index: 10;
+}
+
+/* Heart pulse animation */
+@keyframes heart-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Responsive heart */
+@media (max-width: 450px) {
+  .heart-shape {
+    width: 320px;
+    height: 300px;
+    clip-path: path('M160,30 C115,-20 0,20 0,100 C0,185 160,285 160,285 C160,285 320,185 320,100 C320,20 205,-20 160,30 Z');
+  }
+
+  .heart-content {
+    width: 220px;
+    padding-top: 40px;
+  }
+}

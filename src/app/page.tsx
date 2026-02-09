@@ -9,6 +9,7 @@ export default function ValentinePage() {
   const [accepted, setAccepted] = useState(false);
   const [showForYou, setShowForYou] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
+  const [hasEscaped, setHasEscaped] = useState(false); // Track if button has escaped
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Pre-generate random values to avoid hydration mismatch
@@ -43,6 +44,7 @@ export default function ValentinePage() {
 
   // Function to move the "Nhi" button to a random position on the page
   const moveNoButton = () => {
+    setHasEscaped(true); // Mark button as escaped
     const buttonWidth = 100;
     const buttonHeight = 44;
     const padding = 20;
@@ -58,40 +60,57 @@ export default function ValentinePage() {
     setNoButtonPos({ x: newX, y: newY });
   };
 
-  // Question Page
-  const QuestionPage = () => (
-    <div
-      ref={containerRef}
-      className="relative w-full max-w-sm sm:max-w-md mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-8 text-center overflow-hidden"
+  // Nhi Button Component - used both inline and floating
+  const NhiButton = ({ isFloating = false }: { isFloating?: boolean }) => (
+    <button
+      onMouseEnter={moveNoButton}
+      onTouchStart={moveNoButton}
+      style={isFloating ? {
+        position: "fixed",
+        left: `${noButtonPos.x}px`,
+        top: `${noButtonPos.y}px`,
+        transition: "all 0.3s ease-out",
+        zIndex: 50,
+      } : undefined}
+      className={`px-10 sm:px-12 py-3 sm:py-3.5 font-semibold rounded-full shadow-lg cursor-not-allowed select-none hover:shadow-xl text-base sm:text-lg
+        ${isFloating
+          ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white'
+          : 'bg-white/90 text-rose-500 hover:bg-white'}`}
     >
-      {/* Decorative hearts */}
-      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 text-pink-300 text-xl sm:text-2xl animate-pulse">💕</div>
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 text-pink-300 text-xl sm:text-2xl animate-pulse delay-150">💕</div>
-      <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 text-pink-300 text-base sm:text-lg animate-bounce">💗</div>
-      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 text-pink-300 text-base sm:text-lg animate-bounce delay-200">💗</div>
+      Nahi ji 🥲
+    </button>
+  );
 
-      {/* Main content */}
-      <div className="relative z-10 pt-2 sm:pt-4">
-        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent mb-3 sm:mb-4">
+  // Question Page - Heart Shape
+  const QuestionPage = () => (
+    <div ref={containerRef} className="heart-shape">
+      {/* Heart content */}
+      <div className="heart-content">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4 drop-shadow-md">
           Hey Babe 💕
         </h1>
 
-        <p className="text-xl sm:text-2xl font-cursive text-pink-600 italic mb-1 sm:mb-2">
+        <p className="text-xl sm:text-2xl font-cursive text-white/90 italic mb-1 drop-shadow">
           Will you be my
         </p>
-        <p className="text-xl sm:text-2xl font-cursive text-pink-600 italic mb-4 sm:mb-6">
-          valentine? <span className="text-red-500">❤️</span>
+        <p className="text-xl sm:text-2xl font-cursive text-white/90 italic mb-5 sm:mb-6 drop-shadow">
+          valentine? <span className="text-yellow-200">❤️</span>
         </p>
 
-        {/* Only Haanji Button inside card */}
-        <button
-          onClick={() => setAccepted(true)}
-          className="px-8 sm:px-10 py-2.5 sm:py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold rounded-full 
-                   shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300
-                   hover:from-rose-600 hover:to-pink-600 active:scale-95 text-sm sm:text-base"
-        >
-          Haanji 😊
-        </button>
+        {/* Buttons container - stacked vertically */}
+        <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
+          <button
+            onClick={() => setAccepted(true)}
+            className="px-10 sm:px-12 py-3 sm:py-3.5 bg-white text-rose-500 font-semibold rounded-full 
+                     shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300
+                     hover:bg-rose-50 active:scale-95 text-base sm:text-lg"
+          >
+            Haanji 😊
+          </button>
+
+          {/* Nhi button - shown inline only when not escaped */}
+          {!hasEscaped && <NhiButton />}
+        </div>
       </div>
     </div>
   );
@@ -275,24 +294,8 @@ export default function ValentinePage() {
         {showForYou ? <ForYouPage /> : accepted ? <CelebrationPage /> : <QuestionPage />}
       </div>
 
-      {/* Nhi Button - Floats around the entire page */}
-      {!accepted && (
-        <button
-          onMouseEnter={moveNoButton}
-          onTouchStart={moveNoButton}
-          style={{
-            position: "fixed",
-            left: noButtonPos.x === 0 ? "20px" : `${noButtonPos.x}px`,
-            top: noButtonPos.y === 0 ? "20px" : `${noButtonPos.y}px`,
-            transition: "all 0.3s ease-out",
-            zIndex: 50,
-          }}
-          className="px-5 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold rounded-full 
-                   shadow-lg cursor-not-allowed select-none hover:shadow-xl text-sm sm:text-base"
-        >
-          Nahi ji 🥲
-        </button>
-      )}
+      {/* Nhi Button - Floats around the entire page after escaping */}
+      {!accepted && hasEscaped && <NhiButton isFloating />}
     </main>
   );
 }
