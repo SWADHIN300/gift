@@ -257,7 +257,7 @@ export default function ValentinePage() {
           className="px-8 py-3 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold rounded-full 
                    shadow-lg cursor-not-allowed select-none hover:shadow-xl"
         >
-          Nahi 🥲
+          Nahi ji 🥲
         </button>
       )}
     </main>
